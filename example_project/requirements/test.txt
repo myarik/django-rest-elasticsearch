@@ -1,0 +1,13 @@
+# Test dependencies go here.
+-r base.txt
+
+
+
+coverage==4.3.4
+flake8==3.3.0 # pyup: != 2.6.0
+django-test-plus==1.0.17
+factory-boy==2.8.1
+
+# pytest
+pytest-django==3.1.2
+pytest-sugar==0.8.0
