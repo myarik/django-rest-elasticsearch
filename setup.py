@@ -4,7 +4,7 @@
 import os
 import re
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def get_version(package):
@@ -33,9 +33,11 @@ setup(
     long_description=read('README.md'),
     author='Yaroslav Muravskyi',
     author_email='y@myarik.com',
-    packages=[
-        "rest_framework_elasticsearch",
-    ],
+
+    packages=find_packages(
+        where='.',
+        exclude=('example_project*', )
+    ),
     include_package_data=True,
     install_requires=[
         "Django>=1.8,<1.11",
