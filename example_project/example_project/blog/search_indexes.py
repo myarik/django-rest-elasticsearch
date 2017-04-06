@@ -6,11 +6,16 @@ from elasticsearch_dsl import (
     Date,
     Keyword,
     Text,
-    Boolean
+    Boolean,
+    Integer
 )
 
 
 class BlogIndex(DocType):
+    """
+    BlogIndex.init(using=es_client)
+    """
+    pk = Integer()
     title = Text(fields={'raw': Keyword()})
     created_at = Date()
     body = Text()
