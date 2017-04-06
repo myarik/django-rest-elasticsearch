@@ -25,7 +25,7 @@ def read(*paths):
 
 
 setup(
-    name='rest_framework_elasticsearch',
+    name='django-rest-elasticsearch',
     version=get_version('rest_framework_elasticsearch'),
     url='https://github.com/myarik/rest_framework_elasticsearch',
     license='MIT License',
