@@ -2,19 +2,33 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 from django.core.exceptions import ImproperlyConfigured
+from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from rest_framework.response import Response
 
-from config.elasticsearch_connection import es_client
-
 
 class ListElasticMixin(object):
-    es_client = es_client
+    es_client = None
 
     es_model = None
     es_paginator = None
     es_filter_backends = ()
     es_excludes_fields = ()
+
+    def get_es_client(self):
+        """
+        You may want to override this if you need to provide different
+        Elasticsearch.client depending on the incoming request.
+        """
+        assert self.es_client is not None, (
+            "'%s' should either include a `queryset` attribute, "
+            "or override the `get_queryset()` method."
+            % self.__class__.__name__
+        )
+        es_client = self.es_client
+        if not isinstance(es_client, Elasticsearch):
+            raise ValueError("Incorrect value es_client")
+        return es_client
 
     def filter_search(self, search):
         for backend in list(self.es_filter_backends):
@@ -33,7 +47,8 @@ class ListElasticMixin(object):
             )
             raise ImproperlyConfigured(msg % self.__class__.__name__)
         index = self.es_model()._get_index()
-        s = Search(using=self.es_client, index=index)
+        es_client = self.get_es_client()
+        s = Search(using=es_client, index=index)
         return s
 
     @staticmethod
@@ -43,7 +58,7 @@ class ListElasticMixin(object):
         """
         return [
             item.to_dict() for item in iterable
-        ]
+            ]
 
     def paginate_search(self, search):
         """
