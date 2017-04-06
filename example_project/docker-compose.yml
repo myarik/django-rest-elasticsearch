@@ -10,26 +10,30 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_backup:/backups
-    env_file: .env
+    environment:
+      - POSTGRES_USER=example_project
 
   django:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
-    user: django
+    command: /start-dev.sh
     depends_on:
       - postgres
       - redis
-    command: /gunicorn.sh
-    env_file: .env
-
-  nginx:
-    build: ./compose/nginx
-    depends_on:
-      - django
+      - elasticsearch
+    volumes:
+      - .:/app
     ports:
-      - "0.0.0.0:80:80"
+      - "8000:8000"
+    environment:
+      - POSTGRES_USER=example_project
+      - USE_DOCKER=yes
 
+  elasticsearch:
+    build: ./compose/elasticsearch
+    ports:
+      - "9200:9200"
 
   redis:
     image: redis:latest
