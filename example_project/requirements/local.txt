@@ -1,8 +1,6 @@
 # Local development dependencies go here
 -r base.txt
 
-git+https://github.com/myarik/rest_framework_elasticsearch.git#egg=rest_framework_elasticsearch
-
 coverage==4.3.4
 django-coverage-plugin==1.5.0
 
