@@ -5,10 +5,6 @@ from .search_indexes import BlogIndex
 
 
 class BlogView(es_views.ListElasticAPIView):
-    """
-    A viewset that provides default `list()` and `retrieve()` actions.
-    """
-    # ES settings
     es_client = es_client
     es_model = BlogIndex
     es_paginator = es_pagination.ElasticLimitOffsetPagination()

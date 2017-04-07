@@ -16,21 +16,12 @@ def get_version(package):
         return re.search("__version__ = ['\"]([^'\"]+)['\"]", src).group(1)
 
 
-def read(*paths):
-    """
-    Build a file path from paths and return the contents.
-    """
-    with open(os.path.join(*paths), 'r') as f:
-        return f.read()
-
-
 setup(
     name='django-rest-elasticsearch',
     version=get_version('rest_framework_elasticsearch'),
     url='https://github.com/myarik/rest_framework_elasticsearch',
     license='MIT License',
     description='Elasticsearch support for Django REST Framework',
-    long_description=read('README.md'),
     author='Yaroslav Muravskyi',
     author_email='y@myarik.com',
 
