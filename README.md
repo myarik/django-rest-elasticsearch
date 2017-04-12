@@ -28,7 +28,7 @@ class Blog(models.Model):
         return self.title
 ```
 
-Let's create a `DocType` to represent our Blog model
+Create a `DocType` to represent our Blog model
 ```python
 class BlogIndex(DocType):
     pk = Integer()
@@ -42,11 +42,11 @@ class BlogIndex(DocType):
         index = 'blog'
 ```
 
-Create the mappings in Elasticsearch
+After, create the mappings in Elasticsearch
 
     BlogIndex.init()
 
-Let's create a view. The view provides search by a word in a title and filtering by tags. 
+Finally, create a view. The view provides search by a word in a title and filtering by tags.
 ```python
 from rest_framework_elasticsearch import es_views, es_pagination, es_filters
 
