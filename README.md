@@ -27,3 +27,53 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 ```
+
+Let's create a `DocType` to represent our Blog model
+```python
+class BlogIndex(DocType):
+    pk = Integer()
+    title = Text(fields={'raw': Keyword()})
+    created_at = Date()
+    body = Text()
+    tags = Keyword(multi=True)
+    is_published = Boolean()
+
+    class Meta:
+        index = 'blog'
+```
+
+Create the mappings in Elasticsearch
+
+    BlogIndex.init()
+
+Let's create a view. The view provides search by a word in a title and filtering by tags. 
+```python
+from rest_framework_elasticsearch import es_views, es_pagination, es_filters
+
+class BlogView(es_views.ListElasticAPIView):
+    es_client = es_client
+    es_model = BlogIndex
+    es_paginator = es_pagination.ElasticLimitOffsetPagination()
+    es_filter_backends = (
+        es_filters.ElasticFieldsFilter,
+        es_filters.ElasticSearchFilter,
+        es_filters.ElasticOrderingFilter,
+    )
+    es_ordering = 'created_at'
+    es_filter_fields = (
+        es_filters.ESFieldFilter('tag', 'tags'),
+    )
+    es_search_fields = (
+        'tags',
+        'title',
+    )
+```
+
+This will allow the client to filter the items in the list by making queries such as:
+```
+http://example.com/blogs/api/list?search=elasticsearch
+http://example.com/blogs/api/list?tag=opensource
+http://example.com/blogs/api/list?tag=opensource,aws
+```
+
+##Documentation
