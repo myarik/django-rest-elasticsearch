@@ -83,3 +83,37 @@ After we need to create a `signals.py` file and add this code:
     def delete_es_record(sender, instance, *args, **kwargs):
         obj = ElasticBlogSerializer(instance)
         obj.delete(ignore=404)
+
+Simple django REST framework search view
+----------------------------------------
+Finally, let's make a simple search view to find all posts filtered by a tag and search by a word in a title:
+
+.. code:: python
+
+    from elasticsearch import Elasticsearch, RequestsHttpConnection
+    from rest_framework_elasticsearch import es_views, es_pagination, es_filters
+    from .search_indexes import BlogIndex
+
+    class BlogView(es_views.ListElasticAPIView):
+        es_client = Elasticsearch(hosts=['elasticsearch:9200/'],
+                                  connection_class=RequestsHttpConnection)
+        es_model = BlogIndex
+        es_filter_backends = (
+            es_filters.ElasticFieldsFilter,
+            es_filters.ElasticSearchFilter
+        )
+        es_filter_fields = (
+            es_filters.ESFieldFilter('tag', 'tags'),
+        )
+        es_search_fields = (
+            'tags',
+            'title',
+        )
+
+That's all, we can start using it.
+
+.. code:: bash
+
+    http://example.com/blogs/api/list?search=elasticsearch
+    http://example.com/blogs/api/list?tag=opensource
+    http://example.com/blogs/api/list?tag=opensource,aws

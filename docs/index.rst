@@ -11,6 +11,8 @@ Elasticsearch for Django REST Framework's
    :caption: Contents:
 
    basic-usage
+   pagination
+   ordering
 
 About
 -----
