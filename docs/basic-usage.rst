@@ -48,3 +48,38 @@ After we need to create the mappings in Elasticsearch. For that you can create t
     BlogIndex.init()
 
 In the `Document lifecycle documentation <http://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle>`_, you can find the full explanation how to work with the document manually.
+
+Make the index updatable when new data is added, updated or deleted
+-------------------------------------------------------------------
+We want to have a consistent data in the ElasticSearch, that is why we need to create, update or delete a document when we change anything in the model. The best way to do it add a Django signal dispatcher. Before adding signals, let's create a serializer to create, update and delete an elasticsearch document.
+
+
+.. code:: python
+
+    from rest_framework_elasticsearch.es_serializer import ElasticModelSerializer
+    from .models import Blog
+    from .search_indexes import BlogIndex
+
+    class ElasticBlogSerializer(ElasticModelSerializer):
+        class Meta:
+            model = Blog
+            es_model = BlogIndex
+            fields = ('pk', 'title', 'created_at', 'tags', 'body', 'is_published')
+
+After we need to create a `signals.py` file and add this code:
+
+.. code:: python
+
+    from django.db.models.signals import pre_save, post_delete
+    from django.dispatch import receiver
+    from .serializers import Blog, ElasticBlogSerializer
+
+    @receiver(pre_save, sender=Blog, dispatch_uid="update_record")
+    def update_es_record(sender, instance, **kwargs):
+        obj = ElasticBlogSerializer(instance)
+        obj.save()
+
+    @receiver(post_delete, sender=Blog, dispatch_uid="delete_record")
+    def delete_es_record(sender, instance, *args, **kwargs):
+        obj = ElasticBlogSerializer(instance)
+        obj.delete(ignore=404)
