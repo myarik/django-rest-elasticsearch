@@ -77,4 +77,4 @@ http://example.com/blogs/api/list?tag=opensource,aws
 ```
 
 ## Documentation
-Documentation is available at [http://django-rest-elasticsearch.readthedocs.io/en/latest/](http://django-rest-elasticsearch.readthedocs.io/en/latest/)
+Documentation is available at [http://django-rest-elasticsearch.readthedocs.io](http://django-rest-elasticsearch.readthedocs.io/en/latest/)
