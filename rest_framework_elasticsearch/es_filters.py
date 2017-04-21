@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import (absolute_import, division, print_function, unicode_literals)
+from functools import reduce
 
 from django.utils import six
-from elasticsearch_dsl import Q
+from elasticsearch_dsl import Q, ValidationException
 
 from rest_framework import filters
 from rest_framework.settings import api_settings
@@ -50,20 +51,42 @@ class ElasticOrderingFilter(filters.OrderingFilter):
 
 class ElasticFieldsFilter(object):
     @staticmethod
-    def get_filter(request, field):
-        params = request.query_params.get(field.label)
-        if params:
-            return {
-                field.name: [param.strip() for param in params.split(',')]
-            }
+    def clean_field(field, data):
+        try:
+            data = field.clean(data)
+        except ValidationException:
+            return
+        # Hook for validate integer
+        if field.name in ['short', 'integer', 'long']:
+            try:
+                data = int(data)
+            except (ValueError, TypeError):
+                return
+
+        # Hook for validate float
+        if field.name in ['float', 'double']:
+            try:
+                data = float(data)
+            except (ValueError, TypeError):
+                return
+        return data
 
     def filter_search(self, request, search, view):
-        filter_fields = getattr(view, 'es_filter_fields', None)
-        if filter_fields:
-            for field in filter_fields:
-                q_filter = self.get_filter(request, field)
-                if q_filter:
-                    search = search.filter('terms', **q_filter)
+        es_filter_fields = getattr(view, 'es_filter_fields', None)
+        es_model = getattr(view, 'es_model', None)
+        if es_filter_fields:
+            for item in es_filter_fields:
+                try:
+                    field = reduce(lambda d, key: d[key] if d else None,
+                                   item.name.split('.'), es_model._doc_type.mapping)
+                except KeyError:
+                    # Incorrect field
+                    continue
+                args = request.query_params.get(item.label, '')
+                data = filter(None, [self.clean_field(field, value.strip())
+                                     for value in args.split(',')])
+                if data:
+                    search = search.filter('terms', **{item.name: data})
         return search
 
 
