@@ -83,8 +83,8 @@ class ElasticFieldsFilter(object):
                     # Incorrect field
                     continue
                 args = request.query_params.get(item.label, '')
-                data = filter(None, [self.clean_field(field, value.strip())
-                                     for value in args.split(',')])
+                data = list(filter(None, [self.clean_field(field, value.strip())
+                                     for value in args.split(',')]))
                 if data:
                     search = search.filter('terms', **{item.name: data})
         return search
