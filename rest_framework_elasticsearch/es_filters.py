@@ -53,8 +53,13 @@ class ElasticFieldsFilter(object):
     @staticmethod
     def clean_field(field, data):
         # Hook for validate bolean
-        if field.name == 'boolean' and data in (True, 'True', 'true', '1'):
-            return True
+        if field.name == 'boolean'
+            if data in (True, 'True', 'true', '1'):
+                return True
+            elif data in (False, 'False', 'false', '0'):
+                return False
+            else:
+                return
         try:
             data = field.clean(data)
         except ValidationException:
