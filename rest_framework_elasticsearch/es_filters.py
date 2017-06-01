@@ -52,6 +52,9 @@ class ElasticOrderingFilter(filters.OrderingFilter):
 class ElasticFieldsFilter(object):
     @staticmethod
     def clean_field(field, data):
+        # Hook for validate bolean
+        if field.name == 'boolean' and data in (True, 'True', 'true', '1'):
+            return True
         try:
             data = field.clean(data)
         except ValidationException:
