@@ -32,8 +32,16 @@ Installation
 
 Changelog
 ---------
+v0.3.0
+......
+
+*Release date: 2017-06-26*
+    - Fixed the bug with filtering by boolean values
+    - Added validation
+
 v0.2.0
 ......
 
 *Release date: 2017-04-07*
     - Initial release.
+
