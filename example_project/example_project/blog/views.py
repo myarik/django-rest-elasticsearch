@@ -17,6 +17,7 @@ class BlogView(es_views.ListElasticAPIView):
     es_ordering = 'created_at'
     es_filter_fields = (
         es_filters.ESFieldFilter('tag', 'tags'),
+        es_filters.ESFieldFilter('is_published', 'is_published')
     )
     es_search_fields = (
         'tags',

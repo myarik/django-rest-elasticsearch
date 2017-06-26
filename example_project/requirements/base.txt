@@ -48,6 +48,4 @@ djangorestframework==3.6.2
 django-filter==1.0.1
 django-rest-elasticsearch==0.2.0
 
-
-
 # Your custom requirements go here
