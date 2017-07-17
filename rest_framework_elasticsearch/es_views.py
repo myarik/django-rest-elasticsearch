@@ -13,4 +13,3 @@ class ListElasticAPIView(ListElasticMixin,
     """
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
