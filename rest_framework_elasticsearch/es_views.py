@@ -3,10 +3,10 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 
 from rest_framework import views
 
-from rest_framework_elasticsearch import es_mixins
+from .es_mixins import ListElasticMixin
 
 
-class ListElasticAPIView(es_mixins.ListElasticMixin,
+class ListElasticAPIView(ListElasticMixin,
                          views.APIView):
     """
     Concrete view for listing a queryset.
