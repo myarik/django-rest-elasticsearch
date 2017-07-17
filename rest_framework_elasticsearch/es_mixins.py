@@ -48,7 +48,7 @@ class ListElasticMixin(object):
             raise ImproperlyConfigured(msg % self.__class__.__name__)
         index = self.es_model()._get_index()
         es_client = self.get_es_client()
-        s = Search(using=es_client, index=index)
+        s = Search(using=es_client, index=index, doc_type=self.es_model)
         return s
 
     @staticmethod
