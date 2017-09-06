@@ -64,7 +64,7 @@ class ListElasticMixin(object):
     @property
     def es_paginator(self):
         """
-        The es paginator instance associated with the view
+        The es_paginator instance associated with the view
         """
         if not hasattr(self, '_es_paginator'):
             if self.es_paginator_class is None:
