@@ -32,6 +32,14 @@ Installation
 
 Changelog
 ---------
+
+v0.3.2
+......
+
+*Release date: 2017-09-06*
+    - Fixed the bug with the paginator class
+    - Remove Django<1.11 from the requirement
+
 v0.3.0
 ......
 
@@ -44,4 +52,3 @@ v0.2.0
 
 *Release date: 2017-04-07*
     - Initial release.
-
