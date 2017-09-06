@@ -100,6 +100,33 @@ class ElasticFieldsFilter(object):
         return search
 
 
+class ElasticFieldsRangeFilter(ElasticFieldsFilter):
+    def filter_search(self, request, search, view):
+        es_filter_fields = getattr(view, 'es_range_filter_fields', None)
+        es_model = getattr(view, 'es_model', None)
+        if es_filter_fields:
+            for item in es_filter_fields:
+                try:
+                    field = reduce(lambda d, key: d[key] if d else None,
+                                   item.name.split('.'), es_model._doc_type.mapping)
+                except KeyError:
+                    # Incorrect field
+                    continue
+                from_arg = self.clean_field(
+                    field,
+                    request.query_params.get('from_{}'.format(item.label),'').strip()
+                )
+                to_arg = self.clean_field(
+                    field,
+                    request.query_params.get('to_{}'.format(item.label),'').strip()
+                )
+                search = search.filter(
+                    'range',
+                    **{item.name: {'gte': from_arg, 'lte': to_arg}}
+                )
+        return search
+
+
 class ElasticSearchFilter(object):
     search_param = api_settings.SEARCH_PARAM
     search_should_match = '75%'
