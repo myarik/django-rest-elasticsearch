@@ -11,7 +11,8 @@ class ListElasticMixin(object):
     es_client = None
 
     es_model = None
-    es_paginator = None
+    es_paginator_class = None
+
     es_filter_backends = ()
     es_excludes_fields = ()
 
@@ -59,6 +60,18 @@ class ListElasticMixin(object):
         return [
             item.to_dict() for item in iterable
             ]
+
+    @property
+    def es_paginator(self):
+        """
+        The es_paginator instance associated with the view
+        """
+        if not hasattr(self, '_es_paginator'):
+            if self.es_paginator_class is None:
+                self._es_paginator = None
+            else:
+                self._es_paginator = self.es_paginator_class()
+        return self._es_paginator
 
     def paginate_search(self, search):
         """
