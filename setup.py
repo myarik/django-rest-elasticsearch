@@ -31,7 +31,7 @@ setup(
     ),
     include_package_data=True,
     install_requires=[
-        "Django>=1.8,<1.11",
+        "Django>=1.8",
         "djangorestframework>=3.2.0",
         "elasticsearch-dsl>=5.0.0,<6.0.0"
     ],
