@@ -12,7 +12,7 @@ Example of ordering
         es_client = Elasticsearch(hosts=['elasticsearch:9200/'],
                                   connection_class=RequestsHttpConnection)
 
-        es_paginator = es_pagination.ElasticLimitOffsetPagination()
+        es_paginator_class = es_pagination.ElasticLimitOffsetPagination
 
         es_filter_backends = (
             es_filters.ElasticFieldsFilter,
