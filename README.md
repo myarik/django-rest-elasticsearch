@@ -56,12 +56,16 @@ class BlogView(es_views.ListElasticAPIView):
     es_paginator_class = es_pagination.ElasticLimitOffsetPagination
     es_filter_backends = (
         es_filters.ElasticFieldsFilter,
+        es_filters.ElasticFieldsRangeFilter,
         es_filters.ElasticSearchFilter,
         es_filters.ElasticOrderingFilter,
     )
     es_ordering = 'created_at'
     es_filter_fields = (
         es_filters.ESFieldFilter('tag', 'tags'),
+    )
+    es_range_filter_fields = (
+        es_filters.ESFieldFilter('created_at', 'created_at'),
     )
     es_search_fields = (
         'tags',
@@ -74,6 +78,7 @@ This will allow the client to filter the items in the list by making queries suc
 http://example.com/blogs/api/list?search=elasticsearch
 http://example.com/blogs/api/list?tag=opensource
 http://example.com/blogs/api/list?tag=opensource,aws
+http://example.com/blogs/api/list?to_created_at=2020-10-01&from_created_at=2017-09-01
 ```
 
 ## Documentation
