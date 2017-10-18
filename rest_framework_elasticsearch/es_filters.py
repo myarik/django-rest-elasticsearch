@@ -120,10 +120,17 @@ class ElasticFieldsRangeFilter(ElasticFieldsFilter):
                     field,
                     request.query_params.get('to_{}'.format(item.label),'').strip()
                 )
-                search = search.filter(
-                    'range',
-                    **{item.name: {'gte': from_arg, 'lte': to_arg}}
-                )
+
+                options = {}
+                if from_arg:
+                    options['gte'] = from_arg
+                if to_arg:
+                    options['lte'] = to_arg
+                if options:
+                    search = search.filter(
+                        'range',
+                        **{item.name: options}
+                    )
         return search
 
 
