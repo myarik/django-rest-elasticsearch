@@ -74,7 +74,7 @@ class ListElasticMixin(object):
             if self.es_pagination_class is None:
                 self._es_paginator = None
             else:
-                self._es_paginator = self.es_paginator_class()
+                self._es_paginator = self.es_pagination_class()
         return self._es_paginator
 
     def paginate_search(self, search):
