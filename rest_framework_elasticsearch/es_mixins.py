@@ -6,15 +6,19 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from rest_framework.response import Response
 
+from .es_inspector import EsAutoSchema
+
 
 class ListElasticMixin(object):
     es_client = None
 
     es_model = None
-    es_paginator_class = None
+    es_pagination_class = None
 
     es_filter_backends = ()
     es_excludes_fields = ()
+
+    schema = EsAutoSchema()
 
     def get_es_client(self):
         """
@@ -67,10 +71,10 @@ class ListElasticMixin(object):
         The es_paginator instance associated with the view
         """
         if not hasattr(self, '_es_paginator'):
-            if self.es_paginator_class is None:
+            if self.es_pagination_class is None:
                 self._es_paginator = None
             else:
-                self._es_paginator = self.es_paginator_class()
+                self._es_paginator = self.es_pagination_class()
         return self._es_paginator
 
     def paginate_search(self, search):

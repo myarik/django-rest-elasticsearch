@@ -12,7 +12,7 @@ Example of the pagination response
         es_client = Elasticsearch(hosts=['elasticsearch:9200/'],
                                   connection_class=RequestsHttpConnection)
 
-        es_paginator_class = es_pagination.ElasticLimitOffsetPagination
+        es_pagination_class = es_pagination.ElasticLimitOffsetPagination
 
         es_model = BlogIndex
         es_filter_backends = (

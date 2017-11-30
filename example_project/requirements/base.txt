@@ -44,8 +44,10 @@ django-redis==4.7.0
 redis>=2.10.5
 
 # Django Rest Framework
-djangorestframework==3.6.2
+djangorestframework==3.7.1
 django-filter==1.0.1
 django-rest-elasticsearch==0.3.2
+coreapi==2.3.3
+coreschema==0.0.4
 
 # Your custom requirements go here
