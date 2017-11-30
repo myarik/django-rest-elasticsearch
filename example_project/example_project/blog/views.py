@@ -7,7 +7,7 @@ from .search_indexes import BlogIndex
 class BlogView(es_views.ListElasticAPIView):
     es_client = es_client
     es_model = BlogIndex
-    es_paginator_class = es_pagination.ElasticLimitOffsetPagination
+    es_pagination_class = es_pagination.ElasticLimitOffsetPagination
 
     es_filter_backends = (
         es_filters.ElasticFieldsFilter,
