@@ -33,6 +33,13 @@ Installation
 Changelog
 ---------
 
+v0.3.3
+......
+
+*Release date: 2017-11-30*
+    - Added a support of the API schema
+    - Remove None values from gte/lte range filter
+
 v0.3.2
 ......
 
