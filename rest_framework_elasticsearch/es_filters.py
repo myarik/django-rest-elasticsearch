@@ -51,7 +51,7 @@ class BaseEsFilterBackend(object):
 class ElasticOrderingFilter(filters.OrderingFilter, BaseEsFilterBackend):
 
     def get_es_ordering_fields(self, view):
-        ordering = view.get_es_ordering_fields() or self.ordering_fields
+        ordering = view.get_es_ordering_fields()
         if isinstance(ordering, six.string_types):
             return (ordering,)
         return ordering
@@ -63,7 +63,7 @@ class ElasticOrderingFilter(filters.OrderingFilter, BaseEsFilterBackend):
     def get_valid_fields(self, queryset, view, context={}):
         fields = self.get_es_ordering_fields(view)
         if not fields:
-            return tuple()
+            return self.get_default_valid_fields(queryset, view, context)
         return [self.validation(field) for field in fields]
 
     def remove_invalid_fields(self, queryset, fields, view, request):
@@ -90,7 +90,7 @@ class ElasticFieldsFilter(BaseEsFilterBackend):
     filter_description = _('A filter term.')
 
     def get_es_filter_fields(self, view):
-        return view.get_es_filter_fields() or tuple()
+        return view.get_es_filter_fields()
 
     def filter_search(self, request, search, view):
         es_model = getattr(view, 'es_model', None)
@@ -132,7 +132,7 @@ class ElasticFieldsFilter(BaseEsFilterBackend):
 class ElasticFieldsRangeFilter(ElasticFieldsFilter):
 
     def get_es_filter_fields(self, view):
-        return view.get_es_range_filter_fields() or tuple()
+        return view.get_es_range_filter_fields()
 
     def filter_search(self, request, search, view):
         es_model = getattr(view, 'es_model', None)
