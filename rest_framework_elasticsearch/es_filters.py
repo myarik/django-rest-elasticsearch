@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
+from __future__ import absolute_import, unicode_literals
+
 from functools import reduce
 
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
-from elasticsearch_dsl import Q, ValidationException
+from django.db.models.sql.constants import ORDER_PATTERN
+
+from elasticsearch_dsl import Q
 
 from rest_framework import filters
 from rest_framework.settings import api_settings
 from rest_framework.compat import coreapi, coreschema
+
+from .es_validators import field_validator
 
 
 class ESFieldFilter(object):
@@ -45,25 +50,34 @@ class BaseEsFilterBackend(object):
 
 class ElasticOrderingFilter(filters.OrderingFilter, BaseEsFilterBackend):
 
-    def get_default_ordering(self, view):
-        ordering = getattr(view, 'es_ordering', None)
+    def get_es_ordering_fields(self, view):
+        ordering = view.get_es_ordering_fields()
         if isinstance(ordering, six.string_types):
             return (ordering,)
         return ordering
 
+    @staticmethod
+    def validation(field):
+        return (field, field) if isinstance(field, six.string_types) else field
+
     def get_valid_fields(self, queryset, view, context={}):
-        valid_fields = getattr(view, 'es_ordering_fields', self.ordering_fields)
-
-        if valid_fields is None:
-            # Default to allowing filtering on serializer fields
+        fields = self.get_es_ordering_fields(view)
+        if not fields:
             return self.get_default_valid_fields(queryset, view, context)
+        return [self.validation(field) for field in fields]
 
-        else:
-            valid_fields = [
-                (item, item) if isinstance(item, six.string_types) else item
-                for item in valid_fields
-                ]
-        return valid_fields
+    def remove_invalid_fields(self, queryset, fields, view, request):
+        """Remove not allowed ordering field."""
+        ordering = list()
+        valid_fields = self.get_valid_fields(queryset, view, {'request': request})
+        valid_fields = {field[1]: field[0] for field in valid_fields}
+        for term in fields:
+            if term.lstrip('-') in valid_fields and ORDER_PATTERN.match(term):
+                # get search Model field name
+                field = valid_fields.get(term) or valid_fields.get(term.lstrip('-'))
+                if isinstance(field, six.string_types):
+                    ordering.append('-' + field if term.startswith('-') else field)
+        return ordering
 
     def filter_search(self, request, search, view):
         ordering = self.get_ordering(request, search, view)
@@ -75,37 +89,8 @@ class ElasticOrderingFilter(filters.OrderingFilter, BaseEsFilterBackend):
 class ElasticFieldsFilter(BaseEsFilterBackend):
     filter_description = _('A filter term.')
 
-    @staticmethod
-    def clean_field(field, data):
-        # Hook for validate bolean
-        if field.name == 'boolean':
-            if data in (True, 'True', 'true', '1'):
-                return True
-            elif data in (False, 'False', 'false', '0'):
-                return False
-            else:
-                return
-        try:
-            data = field.clean(data)
-        except ValidationException:
-            return
-        # Hook for validate integer
-        if field.name in ['short', 'integer', 'long']:
-            try:
-                data = int(data)
-            except (ValueError, TypeError):
-                return
-
-        # Hook for validate float
-        if field.name in ['float', 'double']:
-            try:
-                data = float(data)
-            except (ValueError, TypeError):
-                return
-        return data
-
     def get_es_filter_fields(self, view):
-        return getattr(view, 'es_filter_fields', tuple())
+        return view.get_es_filter_fields()
 
     def filter_search(self, request, search, view):
         es_model = getattr(view, 'es_model', None)
@@ -117,10 +102,10 @@ class ElasticFieldsFilter(BaseEsFilterBackend):
                 # Incorrect field
                 continue
             args = request.query_params.get(item.label, '')
-            data = [self.clean_field(field, value.strip()) for value in args.split(',')]
+            data = [field_validator.validate(field.name, value.strip())
+                    for value in args.split(',')]
             # Remove empty string and None values
-            data = [value for value in data
-                    if value is not None and value is not '']
+            data = [value for value in data if value not in (None, '')]
             if data:
                 search = search.filter('terms', **{item.name: data})
         return search
@@ -147,7 +132,7 @@ class ElasticFieldsFilter(BaseEsFilterBackend):
 class ElasticFieldsRangeFilter(ElasticFieldsFilter):
 
     def get_es_filter_fields(self, view):
-        return getattr(view, 'es_range_filter_fields', tuple())
+        return view.get_es_range_filter_fields()
 
     def filter_search(self, request, search, view):
         es_model = getattr(view, 'es_model', None)
@@ -158,25 +143,24 @@ class ElasticFieldsRangeFilter(ElasticFieldsFilter):
             except KeyError:
                 # Incorrect field
                 continue
-            from_arg = self.clean_field(
-                field,
-                request.query_params.get('from_{}'.format(item.label), '').strip()
-            )
-            to_arg = self.clean_field(
-                field,
-                request.query_params.get('to_{}'.format(item.label), '').strip()
-            )
+
+            from_arg_name = request.query_params.get('from_' + item.label, '')
+            to_arg_name = request.query_params.get('to_' + item.label, '')
+
+            from_arg = field_validator.validate(field.name, from_arg_name.strip())
+            to_arg = field_validator.validate(field.name, to_arg_name.strip())
 
             options = {}
+
             if from_arg:
                 options['gte'] = from_arg
+
             if to_arg:
                 options['lte'] = to_arg
+
             if options:
-                search = search.filter(
-                    'range',
-                    **{item.name: options}
-                )
+                search = search.filter('range', **{item.name: options})
+
         return search
 
 
@@ -193,13 +177,29 @@ class ElasticSearchFilter(BaseEsFilterBackend):
         """
         return request.query_params.get(self.search_param, '')
 
-    def filter_search(self, request, search, view):
-        search_fields = getattr(view, 'es_search_fields', None)
-        search_query = self.get_search_query(request)
+    def get_es_query(self, s_query, s_fields, **kwargs):
+        """ Create and return elasticsearch Query.
 
-        if not search_fields or not search_query:
+        You could overload this method for creating your custom
+        search Query object.
+
+        Arguments:
+            s_query: request search param
+            s_fields: search fields
+
+        Keyword arguments:
+            request: request object
+            view: view object
+        """
+        return Q("multi_match", query=s_query, fields=s_fields)
+
+    def filter_search(self, request, search, view):
+        s_query = self.get_search_query(request)
+        s_fields = view.get_es_search_fields()
+        if not s_query or not s_fields:
             return search
-        q = Q("multi_match", query=search_query, fields=search_fields)
+
+        q = self.get_es_query(s_query, s_fields, request=request, view=view)
         search = search.query(q)
         search.query.minimum_should_match = self.search_should_match
         return search

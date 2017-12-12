@@ -30,6 +30,8 @@ if READ_DOT_ENV_FILE:
     env.read_env(env_file)
     print('The .env file has been loaded. See base.py for more information')
 
+ALLOWED_HOSTS = ["0.0.0.0"]
+
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
