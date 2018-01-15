@@ -20,7 +20,7 @@ setup(
     name='django-rest-elasticsearch',
     version=get_version('rest_framework_elasticsearch'),
     url='https://github.com/myarik/rest_framework_elasticsearch',
-    license='BSD',
+    license='Apache 2.0',
     description='Elasticsearch support for Django REST Framework',
     author='Yaroslav Muravskyi',
     author_email='y@myarik.com',
@@ -33,14 +33,14 @@ setup(
     install_requires=[
         "Django>=1.8",
         "djangorestframework>=3.2.0",
-        "elasticsearch-dsl>=5.0.0,<6.0.0"
+        "elasticsearch-dsl>=5.0.0,<7.0.0"
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
