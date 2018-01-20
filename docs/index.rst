@@ -22,7 +22,7 @@ The library uses `Elasticsearch DSL <https://github.com/elastic/elasticsearch-ds
 Requirements
 ------------
 - Django REST Framework 3.5 and above
-- elasticsearch-dsl>=5.0.0,<6.0.0 (*Elasticsearch 5.x*)
+- elasticsearch-dsl>=5.0.0,<7.0.0 (*Elasticsearch 5.x*)
 
 Installation
 ------------
@@ -32,6 +32,12 @@ Installation
 
 Changelog
 ---------
+
+v0.3.4
+......
+
+*Release date: 2018-01-20*
+    - Fixed small bugs
 
 v0.3.3
 ......
