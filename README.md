@@ -6,7 +6,7 @@ The library uses Elasticsearch DSL library ([elasticsearch-dsl-py](https://githu
 
 ## Requirements
 - Django REST Framework 3.5 and above
-- elasticsearch-dsl>=5.0.0,<6.0.0 (**Elasticsearch 5.x**)
+- elasticsearch-dsl>=5.0.0,<7.0.0 (**Elasticsearch 5.x**)
 
 ## Example
 Let's take a look at a quick example of using Django REST Elasticsearch to build a simple application.
