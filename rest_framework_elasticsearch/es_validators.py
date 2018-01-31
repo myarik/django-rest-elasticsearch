@@ -1,7 +1,10 @@
 from abc import ABCMeta, abstractstaticmethod
 
+import six
 
-class BaseESFieldValidator(metaclass=ABCMeta):
+
+@six.add_metaclass(ABCMeta)
+class BaseESFieldValidator:
     # Elastycsearch field types
     es_types = []
 
