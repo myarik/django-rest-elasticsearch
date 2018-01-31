@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractstaticmethod
+from abc import ABCMeta, abstractmethod
 
 import six
 
@@ -8,7 +8,8 @@ class BaseESFieldValidator:
     # Elastycsearch field types
     es_types = []
 
-    @abstractstaticmethod
+    @staticmethod
+    @abstractmethod
     def validate(value):
         # must be implemented in your class, this method
         # validated value and retun python type or None
