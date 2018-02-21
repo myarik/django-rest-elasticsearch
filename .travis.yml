@@ -1,0 +1,28 @@
+sudo: false
+language: python
+python:
+  - "2.7"
+cache:
+  directories:
+    - $HOME/.pip-cache/
+matrix:
+  include:
+  - python: "2.7"
+    env: TOX_ENV=py27-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
+  - python: "3.3"
+    env: TOX_ENV=py33-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
+  - python: "3.4"
+    env: TOX_ENV=py34-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
+  - python: "3.5"
+    env: TOX_ENV=py35-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
+  - python: "3.6"
+    env: TOX_ENV=py36-drf{36,37}-dj{110,111,200}-esdsl{5,6}
+install:
+  - pip install --upgrade pip
+  - pip install tox-travis
+before_script:
+  - sleep 10
+script:
+  - tox
+services:
+  - elasticsearch
