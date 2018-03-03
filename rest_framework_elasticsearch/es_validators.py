@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 
 import six
@@ -21,9 +22,9 @@ class BooleanFieldValidator(BaseESFieldValidator):
 
     @staticmethod
     def validate(value):
-        if value in (True, 'True', 'true', '1'):
+        if value in (True, 'True', 'true', '1', 1):
             return True
-        elif value in (False, 'False', 'false', '0'):
+        elif value in (False, 'False', 'false', '0', 0):
             return False
         return None
 
@@ -69,7 +70,7 @@ class ESFieldValidator:
 
     def validate(self, field_type, value):
         validator = self._validators.get(field_type)
-        return validator.validate(value) if validator else None
+        return validator.validate(value) if validator else value
 
 
 field_validator = ESFieldValidator()

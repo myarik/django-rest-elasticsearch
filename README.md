@@ -81,5 +81,43 @@ http://example.com/blogs/api/list?tag=opensource,aws
 http://example.com/blogs/api/list?to_created_at=2020-10-01&from_created_at=2017-09-01
 ```
 
+
+## Development
+Activate Virtual Environment [virtualenvs](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
+```
+$ virtualenv venv
+$ source venv/bin/activate
+```
+
+To run all of the tests for **django-rest-elasticsearch**, run:
+```
+$ python setup.py test
+```
+
+Use the `pytest` for running scripts
+- Run all of the tests in `test/test_filters.py`
+```
+$ pytest tests/test_filters.py
+```
+
+- Run only the `TestElasticSearchFilter` test.
+```
+$ pytest tests/test_filters.py::TestElasticSearchFilter
+```
+
+By default, the test connection is attempted at **localhost:9200**, based on
+the defaults specified in the **elasticsearch-py** [Connection](https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/connection/base.py#L29)
+class. Elasticsearch instance at **localhost:9200**
+does not meet these requirements, it is possible to specify a different test
+Elasticsearch server through the **TEST_ES_SERVER** environment variable.
+```
+$ TEST_ES_SERVER=my-test-server:9201 pytest
+```
+
+For running tests in ralease environments use [tox](https://tox.readthedocs.io/)
+```
+$ tox
+```
+
 ## Documentation
 Documentation is available at [http://django-rest-elasticsearch.readthedocs.io](http://django-rest-elasticsearch.readthedocs.io/en/latest/)

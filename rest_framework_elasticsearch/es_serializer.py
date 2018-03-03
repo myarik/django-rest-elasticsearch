@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 class BaseElasticSerializer(object):
     def es_instance(self):
-        return NotImplementedError
+        raise NotImplementedError
 
     def get_es_model(self):
         if not hasattr(self.Meta, 'es_model'):

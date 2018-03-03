@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # http://www.django-rest-framework.org/topics/3.7-announcement/#customizing-api-docs-schema-generation
 try:
     from rest_framework.schemas import AutoSchema
