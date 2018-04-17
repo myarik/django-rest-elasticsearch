@@ -39,7 +39,7 @@ class ElasticAPIView(views.APIView):
         Return field or fields used for search filtering by range.
         The return value must be an iterable.
         """
-        return getattr(self, 'es_filter_fields', tuple())
+        return getattr(self, 'es_range_filter_fields', tuple())
 
     def get_es_ordering_fields(self):
         """
