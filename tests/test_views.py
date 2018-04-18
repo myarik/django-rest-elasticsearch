@@ -59,9 +59,9 @@ class TestElasticAPIView:
         view = ElasticAPIView()
         assert view.get_es_range_filter_fields() == tuple()
 
-        es_filter_fields = ('first_name', 'last_name')
-        view.es_filter_fields = es_filter_fields
-        assert view.get_es_range_filter_fields() == es_filter_fields
+        es_range_filter_fields = ('first_name', 'last_name')
+        view.es_range_filter_fields = es_range_filter_fields
+        assert view.get_es_range_filter_fields() == es_range_filter_fields
 
     def test_get_es_ordering_fields(self):
         view = ElasticAPIView()
