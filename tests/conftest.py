@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 
 import pytest
+import rest_framework
 
 from elasticsearch_dsl import search as search_
 from elasticsearch_dsl.connections import connections
@@ -11,6 +12,9 @@ from elasticsearch.helpers import bulk
 from elasticsearch import Elasticsearch
 
 from .test_data import create_test_index, DATA
+
+
+DRF_VERSION = tuple(map(int, rest_framework.VERSION.split('.')))
 
 
 def pytest_configure():
