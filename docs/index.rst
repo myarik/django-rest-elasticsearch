@@ -33,6 +33,12 @@ Installation
 Changelog
 ---------
 
+v0.4
+......
+
+*Release date: 2018-03-03*
+    - Add tests
+
 v0.3.4
 ......
 

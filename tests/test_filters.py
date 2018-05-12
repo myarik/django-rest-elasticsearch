@@ -252,7 +252,7 @@ class TestElasticFieldsRangeFilter:
         """
         view = ElasticAPIView()
         view.es_model = DataDocType
-        view.es_filter_fields = es_range_filter_fields
+        view.es_range_filter_fields = es_range_filter_fields
         return view
 
     def test_get_es_filter_fields(self):
