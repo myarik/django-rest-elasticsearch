@@ -121,3 +121,4 @@ $ tox
 
 ## Documentation
 Documentation is available at [http://django-rest-elasticsearch.readthedocs.io](http://django-rest-elasticsearch.readthedocs.io/en/latest/)
+
