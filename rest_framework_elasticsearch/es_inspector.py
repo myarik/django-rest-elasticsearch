@@ -8,8 +8,7 @@ else:
     from rest_framework.schemas.utils import is_list_view
 
     class EsAutoSchema(AutoSchema):
-        """ Elasticsearch inspector for APIView
-
+        """Elasticsearch inspector for APIView.
         Responsible for per-view instrospection and schema generation.
         """
         def get_es_filter_fields(self, path, method):
