@@ -141,13 +141,14 @@ class ElasticFieldsFilter(BaseEsFilterBackend):
 
 
 class ElasticFieldsRangeFilter(ElasticFieldsFilter):
+    range_description = _('A range filter term.')
 
-    def get_es_filter_fields(self, view):
+    def get_es_range_filter_fields(self, view):
         return view.get_es_range_filter_fields()
 
     def filter_search(self, request, search, view):
         es_model = getattr(view, 'es_model', None)
-        for item in self.get_es_filter_fields(view):
+        for item in self.get_es_range_filter_fields(view):
             try:
                 field = reduce(lambda d, key: d[key] if d else None,
                                item.name.split('.'), es_model._doc_type.mapping)
@@ -174,6 +175,33 @@ class ElasticFieldsRangeFilter(ElasticFieldsFilter):
 
         return search
 
+    def get_schema_fields(self, view):
+        assert coreapi is not None, 'coreapi must be installed to use `get_schema_fields()`'
+        assert coreschema is not None, 'coreschema must be installed to use `get_schema_fields()`'
+        fields = []
+        for item in self.get_es_range_filter_fields(view):
+            field = coreapi.Field(
+                name='from_'+ item.label,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=force_text(item.label),
+                    description=force_text(item.description or self.range_description)
+                )
+            )
+            fields.append(field)
+            field = coreapi.Field(
+                name='to_'+ item.label,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=force_text(item.label),
+                    description=force_text(item.description or self.range_description)
+                )
+            )
+            fields.append(field)
+
+        return fields
 
 class ElasticSearchFilter(BaseEsFilterBackend):
     search_param = api_settings.SEARCH_PARAM
