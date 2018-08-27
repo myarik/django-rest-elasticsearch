@@ -261,7 +261,7 @@ class TestElasticFieldsRangeFilter:
             ESFieldFilter('active', 'is_active')
         )
         view = self.create_view(es_range_filter_fields)
-        result = self.backend.get_es_filter_fields(view)
+        result = self.backend.get_es_range_filter_fields(view)
         assert result == es_range_filter_fields
 
     @pytest.mark.parametrize('es_filter_fields, query_params, expected', [

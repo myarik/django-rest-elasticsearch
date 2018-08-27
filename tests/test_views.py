@@ -139,8 +139,10 @@ class TestElasticAPIView:
         view.es_search_fields = ('description',)
         view.es_filter_fields = (
             ESFieldFilter('skills'),
-            ESFieldFilter('score'),
             ESFieldFilter('active', 'is_active')
+        )
+        view.es_range_filter_fields = (
+            ESFieldFilter('score'),
         )
 
         view.request = rf.get('/test/')
