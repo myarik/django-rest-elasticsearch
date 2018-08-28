@@ -45,7 +45,7 @@ class TestEsAutoSchema:
         for fields in (self.inspector.get_es_filter_fields('/', 'GET'),
                        self.inspector.get_filter_fields('/', 'GET')):
             field_names = [field.name for field in fields]
-            assert sorted(field_names) == ['date', 'description', 'score']
+            assert sorted(field_names) == ['description', 'from_date', 'score', 'to_date']
 
     def test_get_es_pagination_fields(self):
         view = ElasticAPIView()
@@ -71,5 +71,6 @@ class TestEsAutoSchema:
         self.inspector.view = view
         link = self.inspector.get_link('/', 'GET', 'localhost')
         field_names = [field.name for field in link.fields]
-        assert sorted(field_names) == ['date', 'description', 'limit',
-                                       'offset', 'ordering', 'score', 'search']
+        assert sorted(field_names) == ['description', 'from_date', 'limit',
+                                       'offset', 'ordering', 'score', 'search',
+                                       'to_date']
