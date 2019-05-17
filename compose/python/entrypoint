@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+
+elasticsearch_ready() {
+    ES_HOST=$(echo $TEST_ES_SERVER | cut -d ":" -f 1)
+    ES_PORT=$(echo $TEST_ES_SERVER | cut -d ":" -f 2)
+    # Wait for Elasticsearch to start up before doing anything.
+    until echo -e "GET / HTTP/1.0\nConnection: close\n\n" | nc ${ES_HOST} ${ES_PORT}; do
+        echo Waiting for Elasticsearch...
+        sleep 1
+    done
+}
+
+until elasticsearch_ready; do
+  >&2 echo 'Waiting for ElasticSearch to become available...'
+  sleep 1
+done
+>&2 echo 'ElasticSearch is available'
+
+
+echo "*** Cluster health"
+curl -sX GET "${TEST_ES_SERVER}/_cluster/health"
+echo "*** Running"
+
+echo "*** Running Test"
+pytest src/tests/
+
+exec "$@"

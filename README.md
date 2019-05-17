@@ -30,7 +30,10 @@ class Blog(models.Model):
 
 Create a `DocType` to represent our Blog model
 ```python
-class BlogIndex(DocType):
+
+from elasticsearch_dsl import Document, Date, Integer, Keyword, Text
+
+class BlogIndex(Document):
     pk = Integer()
     title = Text(fields={'raw': Keyword()})
     created_at = Date()
@@ -38,8 +41,8 @@ class BlogIndex(DocType):
     tags = Keyword(multi=True)
     is_published = Boolean()
 
-    class Meta:
-        index = 'blog'
+    class Index:
+        name = 'blog'
 ```
 
 After, create the mappings in Elasticsearch
@@ -117,6 +120,14 @@ $ TEST_ES_SERVER=my-test-server:9201 pytest
 For running tests in ralease environments use [tox](https://tox.readthedocs.io/)
 ```
 $ tox
+```
+
+### Docker
+
+This package also can be ran using Docker and the default entrypoint run the pytests.
+
+```
+docker-compose up
 ```
 
 ## Documentation

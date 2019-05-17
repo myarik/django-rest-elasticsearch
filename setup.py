@@ -32,8 +32,8 @@ setup(
     include_package_data=True,
     install_requires=[
         "Django>=1.8",
-        "djangorestframework>=3.2.0",
-        "elasticsearch-dsl>=5.0.0,<6.2.0",
+        "djangorestframework>=3.9.1",
+        "elasticsearch-dsl>=6.0.0,<7.0.0",
         "six>=1.11.0",
         'pytest-runner'
     ],

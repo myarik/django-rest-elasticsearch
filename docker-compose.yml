@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  elasticsearch:
+    build:
+      context: compose/elasticsearch/
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  python:
+    build:
+      context: compose/python/
+    volumes:
+      - .:/app/src            
+
+    depends_on:
+      - elasticsearch
+    user: root

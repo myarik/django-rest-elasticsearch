@@ -371,7 +371,7 @@ class TestElasticSearchFilter:
         (
             ('description'),
             {'search': 'Ford Prefect'},
-            [2, 8, 10, 5, 6, 12]
+            [2, 10, 8, 5, 6, 12]
         ),
         (
             ('description'),
@@ -391,4 +391,6 @@ class TestElasticSearchFilter:
         request.query_params = query_params
         search = self.backend.filter_search(request, search, view)
         result = get_search_ids(search)
+
+
         assert result == expected

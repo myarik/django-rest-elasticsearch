@@ -1,0 +1,7 @@
+Django>=2
+djangorestframework>=3.9.1
+elasticsearch-dsl>=6.0.0,<7.0.0
+six>=1.11.0
+pytest-runner
+pytest
+coreapi

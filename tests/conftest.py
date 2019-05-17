@@ -34,7 +34,8 @@ def pytest_configure():
                 }
             },
         ],
-        ALLOWED_HOSTS=['localhost', 'testserver']
+        ALLOWED_HOSTS=['localhost', 'testserver'],
+        ES_CLIENT = connections.create_connection(hosts=[os.environ.get('TEST_ES_SERVER', {})], timeout=20)
     )
 
     django.setup()
