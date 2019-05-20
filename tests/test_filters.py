@@ -371,7 +371,7 @@ class TestElasticSearchFilter:
         (
             ('description'),
             {'search': 'Ford Prefect'},
-            [2, 10, 8, 5, 6, 12]
+            [2, 8, 10, 5, 6, 12]
         ),
         (
             ('description'),
