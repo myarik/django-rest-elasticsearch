@@ -13,7 +13,9 @@ class DataDocType(es.Document):
     birthday = es.Date()
     is_active = es.Boolean()
     score = es.Integer()
+    location = es.GeoPoint()
     description = es.Text()
+
 
     class Index:
         name = 'test'
@@ -37,6 +39,9 @@ DATA = [
             'birthday': '1985-03-17T12:20:09',
             'is_active': True,
             'score': 100,
+            "location": {
+                "lon": -8.2177734375, "lat": 43.16512263158296   # Spain
+            },
             'description': """
                 He had made one careless blunder though, because he had skimped
                 a bit on his preparatory research.
@@ -55,6 +60,9 @@ DATA = [
             'birthday': '1990-02-07T15:22:09',
             'is_active': True,
             'score': 200,
+            "location": {
+                "lon": -2.2412109375, "lat": 42.98857645832184  # Spain
+            },
             'description': """
                 The information he had gathered had led him to choose the name
                 Ford Prefect as being nicely inconspicuous.
@@ -73,6 +81,9 @@ DATA = [
             'birthday': '1987-05-27T16:08:02',
             'is_active': False,
             'score': 100,
+            "location": {
+                "lon": 2.96630859375, "lat": 42.147114459220994  # Spain
+            },
             'description': """
                 He struck most of the friends he had made on Earth as an
                 eccentric, but a harmless one – an unruly boozer with some
@@ -92,6 +103,9 @@ DATA = [
             'birthday': '1991-04-07T16:38:29',
             'is_active': True,
             'score': 450,
+            "location": {
+                "lon": -3.40576171875, "lat": 37.16031654673677  # Spain
+            },
             'description': """
                 Thereafter, staggering semi-paralytic down the night streets he
                 would of ten ask passing policemen if they knew the way to
@@ -111,6 +125,9 @@ DATA = [
             'birthday': '1992-01-21T12:18:09',
             'is_active': True,
             'score': 10,
+            'location': {
+                "lon": -121.9921875, "lat": 46.6795944656402  # USA
+            },
             'description': """
                 Ford Prefect was desperate that any flying saucer at all would
                 arrive soon because fifteen years was a long time to get
@@ -131,6 +148,9 @@ DATA = [
             'birthday': '1991-09-07T11:20:29',
             'is_active': False,
             'score': 1000,
+            'location': {
+                "lon": -74.35546875, "lat": 40.111688665595956  # USA
+            },
             'description': """
                 Ford wished that a flying saucer would arrive soon because he
                 knew how to flag flying saucers down and get lifts from them.
@@ -149,6 +169,9 @@ DATA = [
             'birthday': '1993-09-20T16:20:08',
             'is_active': True,
             'score': 500,
+            'location': {
+                "lon": -80.244140625, "lat": 25.928407032694118  # USA
+            },
             'description': """
                 He knew how to see the Marvels of the Universe for less than
                 thirty Altairan dollars a day.
@@ -167,6 +190,9 @@ DATA = [
             'birthday': '1991-04-26T16:48:03',
             'is_active': False,
             'score': 600,
+            'location': {
+                "lon": 131.044921875, "lat": -12.983147716796566 # Australian
+            },
             'description': """
                 In fact, Ford Prefect was a roving researcher for that wholly
                 remarkable book The Hitchhiker’s Guide to the Galaxy.
@@ -185,6 +211,9 @@ DATA = [
             'birthday': '1988-08-27T16:18:29',
             'is_active': True,
             'score': 100,
+            'location': {
+                "lon": 138.955078125, "lat": -34.161818161230386  # Australian
+            },
             'description': """
                 Human beings are great adaptors, and by lunchtime life in the
                 environs of Arthur’s house had settled into a steady routine.
@@ -203,6 +232,9 @@ DATA = [
             'birthday': '1992-03-11T11:28:09',
             'is_active': False,
             'score': 600,
+            'location': {
+                "lon": 121.322021484375, "lat": 24.986058021167594  # Taiwan
+            },
             'description': """
                 Arthur looked up and squinting into the sun was startled to see
                 Ford Prefect standing above him.
@@ -221,6 +253,9 @@ DATA = [
             'birthday': '1991-05-20T17:28:32',
             'is_active': True,
             'score': 900,
+            'location': {
+                "lon": 120.38818359375, "lat": 23.815500848699656  # Taiwan
+            },
             'description': """
                 Then suddenly he squatted down beside Arthur.
             """
@@ -238,6 +273,9 @@ DATA = [
             'birthday': '1990-04-23T16:48:09',
             'is_active': True,
             'score': 10,
+            'location': {
+                "lon": 121.44287109374999, "lat": 23.71495350699027  # Taiwan
+            },
             'description': """
                 Ford stared at Arthur, and Arthur was astonished to find that
                 his will was beginning to weaken.
@@ -256,6 +294,9 @@ DATA = [
             'birthday': '1989-01-20T06:18:02',
             'is_active': True,
             'score': 200,
+            'location': {
+                "lon": 120.78369140624999, "lat":22.268764039073968  # Taiwan
+            },
             'description': """
                 Two contestants would sit either side of a table, with a glass
                 in front of each of them.
@@ -274,6 +315,9 @@ DATA = [
             'birthday': '1984-07-21T12:18:29',
             'is_active': True,
             'score': 100,
+            'location': {
+                "lon": 120.95947265624999, "lat": 23.83560098662095  # Taiwan
+            },
             'description': """
                 The game was not unlike the Earth game called Indian Wrestling,
                 and was played like this.

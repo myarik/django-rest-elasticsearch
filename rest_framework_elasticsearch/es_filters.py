@@ -257,3 +257,179 @@ class ElasticSearchFilter(BaseEsFilterBackend):
                 )
             )
         ]
+
+
+GEO_BOUNDING_BOX_PARAM = 'geo_bounding_box'
+
+class ElasticGeoBoundingBoxFilter(BaseEsFilterBackend):
+    geo_bounding_box_param = ""
+    geo_bounding_box_title = _('Geo Bounding Box')
+    geo_bounding_box_description = _("""A Geo Bounding Box filter.
+        Expects format {top left lat, lon}|{bottom right lat, lon}
+        ex. Filter documents that are located in the given bounding box.
+        44.87,40.07|43.87,41.11""")
+
+    def get_geo_bounding_box_params(self, request, view):
+        """
+        Geo bounding box
+        ?location__geo_bounding_box={top left lat, lon}|{bottom right lat, lon}
+        ex. Filter documents that are located in the given bounding box.
+        ?location__geo_bounding_box=44.87,40.07|43.87,41.11
+        """
+
+        location_field = view.get_es_geo_location_field()
+        if not location_field:
+            return {}
+
+        self.geo_bounding_box_param = location_field.name
+        values = request.query_params.get(location_field.name, '').split('|')
+
+        if len(values) < 2:
+            return {}
+
+        top_left_points = {}
+        bottom_right_points = {}
+        options = {}
+
+        # Top left
+        lat_lon = values[0].split(
+            ','
+        )
+        if len(lat_lon) >= 2:
+            top_left_points.update({
+                'lat': float(lat_lon[0]),
+                'lon': float(lat_lon[1]),
+            })
+
+        # Bottom right
+        lat_lon = values[1].split(
+            ','
+        )
+        if len(lat_lon) >= 2:
+            bottom_right_points.update({
+                'lat': float(lat_lon[0]),
+                'lon': float(lat_lon[1]),
+            })
+
+        # Options
+        for value in values[2:]:
+            if ':' in value:
+                opt_name_val = value.split(
+                    ':'
+                )
+                if len(opt_name_val) >= 2:
+                    if opt_name_val[0] in ('_name', 'validation_method', 'type'):
+                        options.update(
+                            {
+                                opt_name_val[0]: opt_name_val[1]
+                            }
+                        )
+
+        if not top_left_points or not bottom_right_points:
+            return {}
+
+        params = {
+            self.geo_bounding_box_param: {
+                'top_left': top_left_points,
+                'bottom_right': bottom_right_points,
+            }
+        }
+
+        params.update(options)
+        return params
+
+    def filter_search(self, request, search, view):
+        geo_params = self.get_geo_bounding_box_params(request, view)
+
+        if not geo_params:
+            return search
+
+        q = Q(GEO_BOUNDING_BOX_PARAM, **geo_params)
+        search = search.filter(q)
+        return search
+
+    def get_schema_fields(self, view):
+        assert coreapi is not None, 'coreapi must be installed to use `get_schema_fields()`'
+        assert coreschema is not None, 'coreschema must be installed to use `get_schema_fields()`'
+        return [
+            coreapi.Field(
+                name=self.geo_bounding_box_param,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=force_text(self.geo_bounding_box_title),
+                    description=force_text(self.geo_bounding_box_description)
+                )
+            )
+        ]
+
+GEO_DISTANCE_PARAM = 'geo_distance'
+
+class ElasticGeoDistanceFilter(BaseEsFilterBackend):
+    geo_distance_param = ''
+    geo_distance_title = _('Geo Distance')
+    geo_distance_description = _("""A Geo Distance filter.
+        Expects format {distance}{unit}|{lat}|{lon}.
+        ex. Filter documents by radius of 100000km from the given location.
+        100000km|12.04|-63.93""")
+
+    def get_geo_distance_params(self, request, view):
+        """
+        Geo distance
+        ?location__geo_distance={distance}{unit}|{lat}|{lon}
+        ex. Filter documents by radius of 100000km from the given location.
+        ?location__geo_distance=100000km|12.04|-63.93
+        """
+        location_field = view.get_es_geo_location_field()
+        if not location_field:
+            return {}
+
+        self.geo_distance_param = location_field.label
+        values = request.query_params.get(self.geo_distance_param, '').split('|', 2)
+        len_values = len(values)
+
+        if len_values < 2:
+            return {}
+
+        lat_lon = values[1].split(',')
+
+        params = {
+            'distance': values[0],
+        }
+        if len(lat_lon) >= 2:
+            params.update({
+                self.geo_distance_param: {
+                    'lat': float(lat_lon[0]),
+                    'lon': float(lat_lon[1]),
+                }
+            })
+
+        if len_values == 3:
+            params['distance_type'] = values[2]
+
+        return params
+
+    def filter_search(self, request, search, view):
+        geo_params = self.get_geo_distance_params(request, view)
+
+        if not geo_params:
+            return search
+
+        q = Q(GEO_DISTANCE_PARAM, **geo_params)
+        search = search.query(q)
+        return search
+
+    def get_schema_fields(self, view):
+        assert coreapi is not None, 'coreapi must be installed to use `get_schema_fields()`'
+        assert coreschema is not None, 'coreschema must be installed to use `get_schema_fields()`'
+        return [
+            coreapi.Field(
+                name=self.geo_distance_param,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=force_text(self.geo_distance_title),
+                    description=force_text(self.geo_distance_description)
+                )
+            )
+        ]
