@@ -56,6 +56,7 @@ setup(
     include_package_data=True,
     install_requires=get_requires(),
     tests_require=get_dev_requires(),
+    setup_requires=get_dev_requires(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
