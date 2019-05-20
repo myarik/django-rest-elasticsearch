@@ -2,3 +2,4 @@ six>=1.10.0
 pytest-runner
 pytest
 coreapi
+pytz
