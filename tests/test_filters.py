@@ -392,5 +392,5 @@ class TestElasticSearchFilter:
         search = self.backend.filter_search(request, search, view)
         result = get_search_ids(search)
 
-
-        assert result == expected
+        # The es filters do not ensure the order.
+        assert result.sort() == expected.sort()

@@ -1,12 +1,14 @@
 sudo: false
 language: python
 python:
-  - "3.4"
+  - "2.7"
 cache:
   directories:
     - $HOME/.pip-cache/
 matrix:
   include:
+  - python: "2.7"
+    env: TOX_ENV=py27-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
   - python: "3.4"
     env: TOX_ENV=py34-drf{34,35,36}-dj{108,109,110,111}-esdsl{5,6}
   - python: "3.5"
