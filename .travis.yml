@@ -8,11 +8,11 @@ cache:
 matrix:
   include:
   - python: "2.7"
-    env: TOX_ENV=py27-drf{34,35,36}-dj{110,111}-esdsl6
+    env: TOX_ENV=py27-drf{35,36}-dj{110,111}-esdsl6
   - python: "3.4"
-    env: TOX_ENV=py34-drf{34,35,36}-dj{109,110,111}-esdsl6
+    env: TOX_ENV=py34-drf{35,36}-dj{109,110,111}-esdsl6
   - python: "3.5"
-    env: TOX_ENV=py35-drf{34,35,36}-dj{110,111}-esdsl6
+    env: TOX_ENV=py35-drf{35,36}-dj{110,111}-esdsl6
   - python: "3.6"
     env: TOX_ENV=py36-drf{36,37}-dj{110,111,200}-esdsl6
 install:
