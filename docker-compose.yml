@@ -12,7 +12,8 @@ services:
 
   python:
     build:
-      context: compose/python/
+      context: ./
+      dockerfile: ./compose/python/Dockerfile
     volumes:
       - .:/app/src            
 

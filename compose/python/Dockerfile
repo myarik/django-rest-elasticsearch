@@ -5,12 +5,16 @@ RUN apk update \
   && apk add curl 
 
 
-COPY ./requirements /requirements
-COPY ./entrypoint /entrypoint
+COPY requirements.txt /requirements.txt
+COPY requirements_dev.txt /requirements_dev.txt
+
+
+COPY ./compose/python/entrypoint /entrypoint
 RUN sed -i 's/\r//' /entrypoint
 RUN chmod +x /entrypoint
 
-RUN pip install -r /requirements/local.txt
+RUN pip install -r /requirements.txt
+RUN pip install -r /requirements_dev.txt
 
 ENV LANG en_GB.UTF-8
 ENV TEST_ES_SERVER=elasticsearch:9200
