@@ -3,9 +3,7 @@
 
 import os
 import re
-
 from setuptools import setup, find_packages
-
 
 def get_version(package):
     """
@@ -14,6 +12,32 @@ def get_version(package):
     with open(os.path.join(package, '__init__.py'), 'rb') as init_py:
         src = init_py.read().decode('utf-8')
         return re.search("__version__ = ['\"]([^'\"]+)['\"]", src).group(1)
+
+
+def get_requires():
+    """
+    Return requires packages listend in `requirements.txt`.
+    """
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    requirement_path = current_dir + '/requirements.txt'
+    install_requires = []
+    if os.path.isfile(requirement_path):
+        with open(requirement_path) as f:
+            install_requires = f.read().splitlines()
+    return install_requires
+
+def get_dev_requires():
+    """
+    Return development requires packages listend in `requirements_dev.txt`.
+    """
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    dev_requirement_path = current_dir + '/requirements_dev.txt'
+ 
+    dev_install_requires = []
+    if os.path.isfile(dev_requirement_path):
+        with open(dev_requirement_path) as f:
+            dev_install_requires = f.read().splitlines()
+    return dev_install_requires
 
 
 setup(
@@ -27,19 +51,12 @@ setup(
 
     packages=find_packages(
         where='.',
-        exclude=('example_project*', )
+        exclude=('example_project*','compose*')
     ),
     include_package_data=True,
-    install_requires=[
-        "Django>=1.8",
-        "djangorestframework>=3.2.0",
-        "elasticsearch-dsl>=5.0.0,<6.2.0",
-        "six>=1.11.0",
-        'pytest-runner'
-    ],
-    tests_require=[
-        'pytest',
-    ],
+    install_requires=get_requires(),
+    tests_require=get_dev_requires(),
+    setup_requires=get_dev_requires(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -57,3 +74,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
     ]
 )
+
+

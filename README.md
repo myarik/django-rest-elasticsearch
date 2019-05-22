@@ -1,12 +1,14 @@
 # Elasticsearch for Django REST Framework
 
+[![Build Status](https://travis-ci.org/josemlp91/django-rest-elasticsearch.svg?branch=master)](https://travis-ci.org/josemlp91/django-rest-elasticsearch)
+
 ## About
 Django REST Elasticsearch provides the easy way for integration [Django REST Framework](http://django-rest-framework.org/) and [Elasticsearch](https://github.com/elastic/elasticsearch).
 The library uses Elasticsearch DSL library ([elasticsearch-dsl-py](https://github.com/elastic/elasticsearch-dsl-py)) It is a high-level library to the official low-level client.
 
 ## Requirements
 - Django REST Framework 3.5 and above
-- elasticsearch-dsl>=5.0.0,<7.0.0 (**Elasticsearch 5.x**)
+- elasticsearch-dsl>=6.0.0,<7.0.0 (**Elasticsearch 6.x**)
 
 ## Example
 Let's take a look at a quick example of using Django REST Elasticsearch to build a simple application.
@@ -30,7 +32,10 @@ class Blog(models.Model):
 
 Create a `DocType` to represent our Blog model
 ```python
-class BlogIndex(DocType):
+
+from elasticsearch_dsl import Document, Date, Integer, Keyword, Text
+
+class BlogIndex(Document):
     pk = Integer()
     title = Text(fields={'raw': Keyword()})
     created_at = Date()
@@ -38,8 +43,8 @@ class BlogIndex(DocType):
     tags = Keyword(multi=True)
     is_published = Boolean()
 
-    class Meta:
-        index = 'blog'
+    class Index:
+        name = 'blog'
 ```
 
 After, create the mappings in Elasticsearch
@@ -117,6 +122,14 @@ $ TEST_ES_SERVER=my-test-server:9201 pytest
 For running tests in ralease environments use [tox](https://tox.readthedocs.io/)
 ```
 $ tox
+```
+
+### Docker
+
+This package also can be ran using Docker and the default entrypoint run the pytests.
+
+```
+docker-compose up
 ```
 
 ## Documentation

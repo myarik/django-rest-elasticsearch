@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+import elasticsearch.exceptions as elasticexceptions
 import elasticsearch_dsl as es
 
 
-class DataDocType(es.DocType):
+class DataDocType(es.Document):
     """Elasticsearch test model"""
     first_name = es.Keyword()
     last_name = es.Keyword()
@@ -15,8 +15,8 @@ class DataDocType(es.DocType):
     score = es.Integer()
     description = es.Text()
 
-    class Meta:
-        index = 'test'
+    class Index:
+        name = 'test'
 
 
 def create_test_index():
@@ -281,3 +281,19 @@ DATA = [
         },
     },
 ]
+
+
+class TestCreateIndex:
+
+    def setup_method(self):
+        pass
+
+    def test_index(self):
+        """Initialize test index"""
+        DataDocType.init()
+        index = es.Index("test")
+
+        try:
+            index.delete()
+        except elasticexceptions.NotFoundError:
+            assert False
