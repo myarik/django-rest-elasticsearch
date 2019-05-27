@@ -172,7 +172,8 @@ class TestElasticAPIView:
             'birthday',
             'is_active',
             'description',
-            'score'
+            'score',
+            'location'
         )
 
         view.request = rf.get('/test/')
@@ -212,7 +213,8 @@ class TestElasticAPIView:
             'birthday',
             'score',
             'skills',
-            'description'
+            'description',
+            'location'
         )
 
         view.request = rf.get('/test/')
