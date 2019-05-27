@@ -259,7 +259,7 @@ class ElasticSearchFilter(BaseEsFilterBackend):
         ]
 
 
-GEO_BOUNDING_BOX_PARAM = 'geo_bounding_box'
+GEO_BOUNDING_BOX = 'geo_bounding_box'
 
 class ElasticGeoBoundingBoxFilter(BaseEsFilterBackend):
     geo_bounding_box_param = ""
@@ -278,11 +278,13 @@ class ElasticGeoBoundingBoxFilter(BaseEsFilterBackend):
         """
 
         location_field = view.get_es_geo_location_field()
+        location_field_name = view.get_es_geo_location_field_name()
+
         if not location_field:
             return {}
 
-        self.geo_bounding_box_param = location_field.name
-        values = request.query_params.get(location_field.name, '').split('|')
+        self.geo_bounding_box_param = location_field_name
+        values = request.query_params.get(location_field_name, '').split('|')
 
         if len(values) < 2:
             return {}
@@ -344,7 +346,7 @@ class ElasticGeoBoundingBoxFilter(BaseEsFilterBackend):
         if not geo_params:
             return search
 
-        q = Q(GEO_BOUNDING_BOX_PARAM, **geo_params)
+        q = Q(GEO_BOUNDING_BOX, **geo_params)
         search = search.filter(q)
         return search
 
@@ -363,7 +365,7 @@ class ElasticGeoBoundingBoxFilter(BaseEsFilterBackend):
             )
         ]
 
-GEO_DISTANCE_PARAM = 'geo_distance'
+GEO_DISTANCE = 'geo_distance'
 
 class ElasticGeoDistanceFilter(BaseEsFilterBackend):
     geo_distance_param = ''
@@ -381,10 +383,12 @@ class ElasticGeoDistanceFilter(BaseEsFilterBackend):
         ?location__geo_distance=100000km|12.04|-63.93
         """
         location_field = view.get_es_geo_location_field()
+        location_field_name = view.get_es_geo_location_field_name()
+
         if not location_field:
             return {}
 
-        self.geo_distance_param = location_field.label
+        self.geo_distance_param = location_field_name
         values = request.query_params.get(self.geo_distance_param, '').split('|', 2)
         len_values = len(values)
 
@@ -415,7 +419,7 @@ class ElasticGeoDistanceFilter(BaseEsFilterBackend):
         if not geo_params:
             return search
 
-        q = Q(GEO_DISTANCE_PARAM, **geo_params)
+        q = Q(GEO_DISTANCE, **geo_params)
         search = search.query(q)
         return search
 

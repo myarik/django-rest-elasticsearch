@@ -402,7 +402,7 @@ class TestElasticGeoBoundingBoxFilter:
     def setup_method(self):
         self.backend = ElasticGeoBoundingBoxFilter()
 
-    def create_view(self, es_geo_location_field):
+    def create_view(self, es_geo_location_field, es_geo_location_field_name):
         """Create and return test view class instance
 
         Args:
@@ -413,28 +413,34 @@ class TestElasticGeoBoundingBoxFilter:
         view = ElasticAPIView()
         view.es_model = DataDocType
         view.es_geo_location_field = es_geo_location_field
+        view.es_geo_location_field_name = es_geo_location_field_name
         return view
 
-    @pytest.mark.parametrize('es_geo_location_field, query_params, expected', [
+    @pytest.mark.parametrize('es_geo_location_field, es_geo_location_field_name, query_params, expected', [
         (
                 ESFieldFilter('location'),
+                'location',
                 {'location': '25.55235365216549, 120.245361328125|21.861498734372567,122.728271484375'},  # Taiwan
                 [14, 10, 12, 13, 11]  # Taiwan
         ),
         (
                 ESFieldFilter('location'),
+                'location',
                 {'location': '43.99281450048989,-8.876953125|35.31736632923788,4.39453125'},  # Spain
                 [1, 2, 3, 4]  # Spain
         ),
         (
                 ESFieldFilter('location'),
+                'location',
                 {'location': '49.781264058178344,-125.5078125|24.206889622398023,-71.982421875'},  # USA
                 [5, 6, 7]  # USA
         ),
     ])
-    def test_geobounding_box_search(self, search, es_geo_location_field, query_params, expected):
+    def test_geobounding_box_search(self, search, es_geo_location_field,
+                                    es_geo_location_field_name, query_params, expected):
 
-        view = self.create_view(es_geo_location_field)
+        view = self.create_view(es_geo_location_field, es_geo_location_field_name)
+
         request = rf.get('/test/')
         request.query_params = query_params
         search = self.backend.filter_search(request, search, view)
@@ -447,7 +453,7 @@ class TestElasticGeoDistanceFilter:
     def setup_method(self):
         self.backend = ElasticGeoDistanceFilter()
 
-    def create_view(self, es_geo_location_field):
+    def create_view(self, es_geo_location_field, es_geo_location_field_name):
         """Create and return test view class instance
 
         Args:
@@ -458,23 +464,28 @@ class TestElasticGeoDistanceFilter:
         view = ElasticAPIView()
         view.es_model = DataDocType
         view.es_geo_location_field = es_geo_location_field
+        view.es_geo_location_field_name = es_geo_location_field_name
         return view
 
-    @pytest.mark.parametrize('es_geo_location_field, query_params, expected', [
+    @pytest.mark.parametrize('es_geo_location_field,es_geo_location_field_name, query_params, expected', [
         (
                 ESFieldFilter('location'),
+                'location',
                 {'location': '800km|39.2663,-4.1748'},  # Spain
                 [1, 2, 3, 4]  # Spain
         ),
         (
                 ESFieldFilter('location'),
+                'location',
                 {'location': '500km|25.55235365216549,120.245361328125'},  # Taiwan
                 [14, 10, 12, 13, 11]  # Taiwan
         ),
     ])
-    def test_geodistance_search(self, search, es_geo_location_field, query_params, expected):
+    def test_geodistance_search(self, search, es_geo_location_field,
+                                es_geo_location_field_name, query_params, expected):
 
-        view = self.create_view(es_geo_location_field)
+        view = self.create_view(es_geo_location_field, es_geo_location_field_name)
+
         request = rf.get('/test/')
         request.query_params = query_params
         search = self.backend.filter_search(request, search, view)
