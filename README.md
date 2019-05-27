@@ -25,6 +25,7 @@ class Blog(models.Model):
     body = models.TextField(_('Body'))
     tags = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     is_published = models.BooleanField(_('Is published'), default=False)
+    
 
     def __str__(self):
         return self.title
@@ -33,7 +34,7 @@ class Blog(models.Model):
 Create a `DocType` to represent our Blog model
 ```python
 
-from elasticsearch_dsl import Document, Date, Integer, Keyword, Text
+from elasticsearch_dsl import Document, Date, Integer, Keyword, Text, GeoPoint
 
 class BlogIndex(Document):
     pk = Integer()
@@ -42,6 +43,7 @@ class BlogIndex(Document):
     body = Text()
     tags = Keyword(multi=True)
     is_published = Boolean()
+    location = GeoPoint()
 
     class Index:
         name = 'blog'
@@ -64,6 +66,7 @@ class BlogView(es_views.ListElasticAPIView):
         es_filters.ElasticFieldsRangeFilter,
         es_filters.ElasticSearchFilter,
         es_filters.ElasticOrderingFilter,
+        es_filters.ElasticGeoBoundingBoxFilter
     )
     es_ordering = 'created_at'
     es_filter_fields = (
@@ -76,6 +79,10 @@ class BlogView(es_views.ListElasticAPIView):
         'tags',
         'title',
     )
+    
+    es_geo_location_field = es_filters.ESFieldFilter('location')
+    es_geo_location_field_name = 'location'
+    
 ```
 
 This will allow the client to filter the items in the list by making queries such as:
@@ -84,6 +91,13 @@ http://example.com/blogs/api/list?search=elasticsearch
 http://example.com/blogs/api/list?tag=opensource
 http://example.com/blogs/api/list?tag=opensource,aws
 http://example.com/blogs/api/list?to_created_at=2020-10-01&from_created_at=2017-09-01
+
+# ElasticGeoBoundingBoxFilter expects format {top left lat, lon}|{bottom right lat, lon}
+http://example.com/blogs/api/list?location=25.55235365216549,120.245361328125|21.861498734372567,122.728271484375
+
+# ElasticGeoDistanceFilter expects format {distance}{unit}|{lat}|{lon}
+http://example.com/blogs/api/list?location=100000km|12.04|-63.93
+
 ```
 
 
