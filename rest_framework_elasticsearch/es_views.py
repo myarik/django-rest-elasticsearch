@@ -55,6 +55,18 @@ class ElasticAPIView(views.APIView):
         """
         return getattr(self, 'es_excludes_fields', None)
 
+    def get_es_geo_location_field(self):
+        """
+        Return field or fields used for search.
+        The return value must be an iterable.
+        """
+        return getattr(self, 'es_geo_location_field', None)
+
+    def get_es_geo_location_field_name(self):
+        """
+        """
+        return getattr(self, 'es_geo_location_field_name', None)
+
     def get_es_client(self):
         """
         You may want to override this if you need to provide different
