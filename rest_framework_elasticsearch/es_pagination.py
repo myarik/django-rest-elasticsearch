@@ -11,8 +11,7 @@ class ElasticLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 10
 
     def _get_count(self, search):
-        response = search.execute()
-        return response.hits.total
+        return search.count()
 
     def paginate_search(self, search, request, view=None):
         """
