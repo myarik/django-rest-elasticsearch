@@ -29,7 +29,6 @@ def create_test_index():
 DATA = [
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '1',
         '_source': {
             'first_name': 'Zofia',
@@ -50,7 +49,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '2',
         '_source': {
             'first_name': 'Callisto',
@@ -71,7 +69,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '3',
         '_source': {
             'first_name': 'Samantha',
@@ -93,7 +90,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '4',
         '_source': {
             'first_name': 'Crocetta',
@@ -115,7 +111,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '5',
         '_source': {
             'first_name': 'Akhmad',
@@ -138,7 +133,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '6',
         '_source': {
             'first_name': 'Rohan',
@@ -159,7 +153,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '7',
         '_source': {
             'first_name': 'Odell',
@@ -180,7 +173,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '8',
         '_source': {
             'first_name': 'Markus',
@@ -201,7 +193,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '9',
         '_source': {
             'first_name': 'Gabriel',
@@ -222,7 +213,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '10',
         '_source': {
             'first_name': 'Merilyn',
@@ -243,7 +233,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '11',
         '_source': {
             'first_name': 'Sunil',
@@ -263,7 +252,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '12',
         '_source': {
             'first_name': 'Navin',
@@ -284,7 +272,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '13',
         '_source': {
             'first_name': 'Helga',
@@ -305,7 +292,6 @@ DATA = [
     },
     {
         '_index': 'test',
-        '_type': 'doc',
         '_id': '14',
         '_source': {
             'first_name': 'Lynsey',
@@ -325,6 +311,10 @@ DATA = [
         },
     },
 ]
+
+if es.__version__ < (7, 0, 0):
+    for doc in DATA:
+        doc['_type'] = 'doc'
 
 
 class TestCreateIndex:
